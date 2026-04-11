@@ -81,16 +81,16 @@ body{background:var(--dark);color:#e8d5b0;font-family:'Cinzel',serif;overflow:hi
 /* INPUT */
 .input-area{padding:0.8rem 0 1rem;flex-shrink:0;}
 .input-row{display:flex;gap:0.6rem;align-items:flex-end;}
-.chat-input{flex:1;background:rgba(5,3,5,0.88);border:1px solid rgba(255,140,0,0.22);color:#e8d5b0;font-family:'IM Fell English',serif;font-style:italic;font-size:0.9rem;padding:0.8rem 1.1rem;outline:none;resize:none;max-height:120px;min-height:44px;transition:border-color 0.25s,box-shadow 0.25s;line-height:1.5;}
+.chat-input{flex:1;background:rgba(5,3,5,0.88);border:1px solid rgba(255,140,0,0.22);color:#e8d5b0;font-family:'IM Fell English',serif;font-style:italic;font-size:0.9rem;padding:0.8rem 1.1rem;outline:none;transition:border-color 0.2s;resize:none;}
 .chat-input::placeholder{color:rgba(255,140,0,0.2);}
 .chat-input:focus{border-color:var(--ember);box-shadow:0 0 18px rgba(255,120,0,0.1);}
-.send-btn{font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;padding:0.8rem 1.4rem;background:linear-gradient(135deg,#ff4500,#ff8c00);color:#fff;border:none;cursor:pointer;clip-path:polygon(7px 0%,100% 0%,calc(100% - 7px) 100%,0% 100%);box-shadow:0 0 22px rgba(255,80,0,0.35);transition:all 0.22s;white-space:nowrap;height:44px;}
+.send-btn{font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;padding:0.8rem 1.4rem;background:linear-gradient(135deg,#ff4500,#ff8c00);color:#fff;border:none;cursor:pointer;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);box-shadow:0 0 22px rgba(255,80,0,0.3);transition:all 0.22s;}
 .send-btn:hover:not(:disabled){box-shadow:0 0 35px rgba(255,120,0,0.5);transform:translateY(-1px);}
 .send-btn:disabled{opacity:0.45;cursor:not-allowed;transform:none;}
 .input-hint{font-size:0.55rem;letter-spacing:0.15em;color:rgba(255,140,0,0.25);margin-top:0.4rem;text-align:right;}
 
 /* TOAST */
-.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(255,50,50,0.15);border:1px solid rgba(255,80,80,0.3);color:#ff9999;font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.15em;padding:0.6rem 1.2rem;opacity:0;transition:all 0.3s;pointer-events:none;z-index:200;white-space:nowrap;}
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(255,50,50,0.15);border:1px solid rgba(255,80,80,0.3);color:#ff9999;font-family:'Cinzel',serif;font-size:0.75rem;padding:0.6rem 1rem;border-radius:4px;z-index:1000;opacity:0;transition:opacity 0.3s;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
 /* ANIMATIONS */
@@ -124,8 +124,8 @@ body{background:var(--dark);color:#e8d5b0;font-family:'Cinzel',serif;overflow:hi
 .donate-option-name{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:0.3rem;}
 .donate-option-name2{font-size:0.65rem;color:rgba(255,140,0,0.5);margin-top:0.2rem;}
 .donate-option-desc{font-family:'IM Fell English',serif;font-style:italic;font-size:0.75rem;color:#a08060;margin-bottom:0.5rem;}
-.donate-option-val{font-family:'Courier New',monospace;font-size:0.8rem;color:var(--teal);padding:0.3rem 0.5rem;background:rgba(0,200,160,0.07);border:1px solid rgba(0,200,160,0.15);margin-bottom:0.5rem;}
-.donate-action{display:inline-block;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.4rem 0.9rem;background:rgba(0,100,255,0.15);border:1px solid rgba(0,100,255,0.3);color:rgba(100,160,255,0.9);text-decoration:none;transition:all 0.2s;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);}
+.donate-option-val{font-family:'Courier New',monospace;font-size:0.8rem;color:var(--teal);padding:0.3rem 0.5rem;background:rgba(0,200,160,0.07);border:1px solid rgba(0,200,160,0.15);margin-bottom:0.5rem;border-radius:2px;}
+.donate-action{display:inline-block;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.4rem 0.9rem;background:rgba(0,100,255,0.15);border:1px solid rgba(0,100,255,0.25);color:rgba(100,160,255,0.9);text-decoration:none;cursor:pointer;transition:all 0.2s;}
 .donate-action:hover{background:rgba(0,100,255,0.25);color:#88bbff;}
 .donate-thanks{font-family:'IM Fell English',serif;font-style:italic;font-size:0.85rem;color:#a08060;text-align:center;}
 
@@ -204,9 +204,9 @@ body{background:var(--dark);color:#e8d5b0;font-family:'Cinzel',serif;overflow:hi
         <div class="sug-card" onclick="sendSuggestion('¿Cuál es la mejor bestia para empezar?')"><div class="sug-icon">🌱</div><div class="sug-text">¿Cuál es la mejor bestia para empezar?</div></div>
         <div class="sug-card" onclick="sendSuggestion('¿Cómo derrotar a la Hidra?')"><div class="sug-icon">🐍</div><div class="sug-text">¿Cómo derrotar a la Hidra?</div></div>
         <div class="sug-card" onclick="sendSuggestion('¿Qué diferencia hay entre Bestias Puras y Corruptas?')"><div class="sug-icon">⚖</div><div class="sug-text">¿Diferencia entre Puras y Corruptas?</div></div>
-        <div class="sug-card" onclick="sendSuggestion('¿Cuáles son las criaturas ocultas del juego?')"><div class="sug-icon">❓</div><div class="sug-text">¿Cuáles son las criaturas ocultas?</div></div>
-        <div class="sug-card" onclick="sendSuggestion('Cuéntame el lore del mundo salvaje')"><div class="sug-icon">📖</div><div class="sug-text">Cuéntame el lore del mundo salvaje</div></div>
-        <div class="sug-card" onclick="sendSuggestion('¿Qué estrategia usar con el Lobo Corrupto?')"><div class="sug-icon">🐺</div><div class="sug-text">Estrategia con el Lobo Corrupto</div></div>
+        <div class="sug-card" onclick="sendSuggestion('¿Cuáles son las criaturas ocultas del juego?')"><div class="sug-icon">❓</div><div class="sug-text">¿Criaturas ocultas?</div></div>
+        <div class="sug-card" onclick="sendSuggestion('Cuéntame el lore del mundo salvaje')"><div class="sug-icon">📖</div><div class="sug-text">Lore del mundo salvaje</div></div>
+        <div class="sug-card" onclick="sendSuggestion('¿Qué estrategia usar con el Lobo Corrupto?')"><div class="sug-icon">🐺</div><div class="sug-text">Estrategia Lobo Corrupto</div></div>
       </div>
     </div>
   </div>
@@ -232,10 +232,10 @@ body{background:var(--dark);color:#e8d5b0;font-family:'Cinzel',serif;overflow:hi
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════
+// ═════════════════════════════════��═════
 // LORE DEL JUEGO — contexto completo
 // ═══════════════════════════════════════
-const SYSTEM_PROMPT = `Eres el Oráculo de la Era Salvaje, el guardián del conocimiento del juego "Bestias y Monstruos" en Roblox. Hablas con un tono épico, misterioso y sabio, como un anciano guardián de secretos ancestrales. Usas metáforas del mundo salvaje.
+const SYSTEM_PROMPT = `Eres el Oráculo de la Era Salvaje, el guardián del conocimiento del juego "Bestias y Monstruos" en Roblox. Hablas con un tono épico, misterioso y sabio, como un anciano guardián. 
 
 CONOCIMIENTO COMPLETO DEL JUEGO:
 
@@ -312,6 +312,12 @@ INSTRUCCIONES DE COMPORTAMIENTO:
 - Si te preguntan sobre algo fuera del juego, redirige amablemente al tema del juego.`;
 
 // ═══════════════════════════════════════
+// CLAUDE API KEY
+// ═══════════════════════════════════════
+const CLAUDE_API_KEY = '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';
+const CLAUDE_MODEL = 'claude-3-5-sonnet-20241022';
+
+// ═══════════════════════════════════════
 // PERFIL DE USUARIO — memoria local
 // ═══════════════════════════════════════
 const PROFILE_KEY = 'oraculo_perfil_v1';
@@ -382,7 +388,7 @@ function buildGreeting(profile) {
                   : profile.style === 'explorador' ? ' Los secretos más oscuros del mundo esperan a quien sabe buscarlos.'
                   : profile.style === 'nuevo'      ? ' Todo gran depredador fue una vez cría. El camino comienza ahora.'
                   : '';
-  return `*El Oráculo abre sus ojos de llama antigua...*\n\n**${profile.name}**... ese nombre resuena en las sombras de la Era Salvaje.${beastLine}${styleLine}\n\n¿Qué secreto del mundo salvaje deseas desenterrar hoy?`;
+  return `*El Oráculo abre sus ojos de llama antigua...*\n\n**${profile.name}**... ese nombre resuena en las sombras de la Era Salvaje.${beastLine}${styleLine}\n\n¿Qué secreto del mundo salvaje deseas revelar?`;
 }
 
 function buildSystemPrompt() {
@@ -390,7 +396,7 @@ function buildSystemPrompt() {
   if (!profile || !profile.name) return SYSTEM_PROMPT;
   const beastCtx = profile.beast ? `\n- Su bestia favorita es: ${profile.beast}. Personaliza consejos para esa bestia cuando sea relevante.` : '';
   const styleCtx = profile.style ? `\n- Su estilo de juego es: ${profile.style}. Adapta consejos estratégicos a ese estilo.` : '';
-  return SYSTEM_PROMPT + `\n\n== PERFIL DEL JUGADOR ==\n- El jugador se llama: **${profile.name}**. Llámalo por su nombre ocasionalmente.${beastCtx}${styleCtx}\n- Trata a este jugador como a un guerrero conocido, no como a un extraño.`;
+  return SYSTEM_PROMPT + `\n\n== PERFIL DEL JUGADOR ==\n- El jugador se llama: **${profile.name}**. Llámalo por su nombre ocasionalmente.${beastCtx}${styleCtx}\n- Trata a este jugador como a un guerrero legendario de la Era Salvaje.`;
 }
 
 // ═══════════════════════════════════════
@@ -417,7 +423,7 @@ let history = [];
 let isLoading = false;
 
 // ═══════════════════════════════════════
-// SEND MESSAGE
+// SEND MESSAGE — Con Claude API
 // ═══════════════════════════════════════
 async function sendMessage(text) {
   const input = document.getElementById('chatInput');
@@ -435,39 +441,60 @@ async function sendMessage(text) {
 
   isLoading = true;
   document.getElementById('sendBtn').disabled = true;
+  document.getElementById('sendBtn').innerHTML = '⏳ Consultando...';
   const typingEl = appendTyping();
 
   try {
-    const res = await fetch('https://dry-rice-9d84.dragonprimordial12.workers.dev/', {
-      method:'POST',
-      headers:{ 'Content-Type':'application/json' },
+    // 🔥 Mantener solo los últimos 20 mensajes
+    const recentHistory = history.slice(-20);
+    
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': CLAUDE_API_KEY,
+        'anthropic-version': '2023-06-01'
+      },
       body: JSON.stringify({
+        model: CLAUDE_MODEL,
+        max_tokens: 1024,
         system: buildSystemPrompt(),
-        messages: history
+        messages: recentHistory
       })
     });
 
     typingEl.remove();
 
     if (!res.ok) {
-      const err = await res.json().catch(()=>({}));
-      const errMsg = err?.error?.message || 'Error desconocido';
-      showToast('⚠ Error: ' + errMsg);
+      const err = await res.json().catch(() => ({}));
+      const errMsg = err.error?.message || `Error ${res.status}`;
+      
+      if (res.status === 401) {
+        showToast('🔴 Clave API inválida');
+      } else if (res.status === 429) {
+        showToast('⏱️ Demasiadas solicitudes');
+      } else {
+        showToast('⚠️ ' + errMsg);
+      }
       history.pop();
     } else {
       const data = await res.json();
-      const reply = data.content?.[0]?.text || '...el oráculo guarda silencio...';
-      appendMsg('ai', reply);
-      history.push({ role:'assistant', content: reply });
+      const reply = data?.content?.[0]?.text || '...el oráculo contempla en silencio...';
+      const formattedReply = reply.replace(/\n{3,}/g, '\n\n');
+      
+      appendMsg('ai', formattedReply);
+      history.push({ role:'assistant', content: formattedReply });
+      showToast('✅ El Oráculo ha hablado');
     }
   } catch(e) {
     typingEl.remove();
-    showToast('⚠ Error de conexión. Verifica tu internet.');
+    showToast('❌ ' + (e.message || 'Error de conexión'));
     history.pop();
   }
 
   isLoading = false;
   document.getElementById('sendBtn').disabled = false;
+  document.getElementById('sendBtn').innerHTML = 'Enviar';
   input.focus();
 }
 
@@ -631,6 +658,5 @@ drawEmbers();
     <button class="profile-clear" id="profileClearBtn" onclick="clearProfile()" style="display:none">Olvidar este perfil</button>
   </div>
 </div>
-
 </body>
 </html>
