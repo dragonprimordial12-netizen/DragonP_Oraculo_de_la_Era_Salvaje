@@ -128,6 +128,43 @@ body{background:var(--dark);color:#e8d5b0;font-family:'Cinzel',serif;overflow:hi
 .donate-action{display:inline-block;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.4rem 0.9rem;background:rgba(0,100,255,0.15);border:1px solid rgba(0,100,255,0.3);color:rgba(100,160,255,0.9);text-decoration:none;transition:all 0.2s;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);}
 .donate-action:hover{background:rgba(0,100,255,0.25);color:#88bbff;}
 .donate-thanks{font-family:'IM Fell English',serif;font-style:italic;font-size:0.85rem;color:#a08060;text-align:center;}
+
+/* PROFILE BADGE (nav) */
+.nav-profile{display:flex;align-items:center;gap:0.4rem;font-size:0.55rem;letter-spacing:0.12em;
+  text-transform:uppercase;color:rgba(255,200,100,0.6);cursor:pointer;padding:0.3rem 0.75rem;
+  border:1px solid rgba(255,200,0,0.15);clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);
+  transition:all 0.2s;background:transparent;}
+.nav-profile:hover{color:var(--gold);border-color:rgba(255,200,0,0.4);background:rgba(255,150,0,0.08);}
+.nav-profile-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 6px var(--teal);flex-shrink:0;}
+
+/* PROFILE / SETUP MODAL */
+.profile-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:300;
+  align-items:center;justify-content:center;padding:1rem;}
+.profile-overlay.open{display:flex;}
+.profile-modal{background:#0a0307;border:1px solid rgba(255,140,0,0.28);max-width:440px;width:100%;padding:2rem;position:relative;animation:fadeUp 0.3s ease both;}
+.profile-modal-close{position:absolute;top:0.8rem;right:0.8rem;background:transparent;border:none;color:rgba(255,140,0,0.4);font-size:1rem;cursor:pointer;}
+.profile-modal-close:hover{color:var(--gold);}
+.profile-modal-icon{font-size:2.5rem;text-align:center;margin-bottom:0.5rem;filter:drop-shadow(0 0 12px rgba(255,150,0,0.4));}
+.profile-modal-title{font-family:'Cinzel Decorative',serif;font-size:1rem;color:var(--gold);text-align:center;margin-bottom:0.25rem;}
+.profile-modal-sub{font-family:'IM Fell English',serif;font-style:italic;color:#a08060;font-size:0.82rem;text-align:center;margin-bottom:1.5rem;line-height:1.5;}
+.profile-field{margin-bottom:1rem;}
+.profile-label{font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,140,0,0.55);margin-bottom:0.4rem;display:block;}
+.profile-input{width:100%;background:rgba(5,3,5,0.9);border:1px solid rgba(255,140,0,0.22);color:#e8d5b0;
+  font-family:'IM Fell English',serif;font-style:italic;font-size:0.9rem;padding:0.7rem 1rem;outline:none;transition:border-color 0.2s;}
+.profile-input:focus{border-color:var(--ember);box-shadow:0 0 12px rgba(255,120,0,0.1);}
+.profile-select{width:100%;background:rgba(5,3,5,0.9);border:1px solid rgba(255,140,0,0.22);color:#e8d5b0;
+  font-family:'Cinzel',serif;font-size:0.72rem;padding:0.7rem 1rem;outline:none;cursor:pointer;transition:border-color 0.2s;appearance:none;}
+.profile-select:focus{border-color:var(--ember);}
+.profile-select option{background:#0a0307;}
+.profile-save{width:100%;font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;
+  padding:0.85rem;background:linear-gradient(135deg,#c83000,#ff8c00);color:#fff;border:none;cursor:pointer;
+  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);box-shadow:0 0 22px rgba(255,80,0,0.3);
+  transition:all 0.22s;margin-top:0.5rem;}
+.profile-save:hover{box-shadow:0 0 35px rgba(255,120,0,0.5);transform:translateY(-1px);}
+.profile-clear{width:100%;background:transparent;border:1px solid rgba(255,60,60,0.2);color:rgba(255,100,100,0.45);
+  font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.45rem;
+  cursor:pointer;transition:all 0.2s;margin-top:0.5rem;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);}
+.profile-clear:hover{border-color:rgba(255,60,60,0.45);color:rgba(255,120,120,0.7);}
 </style>
 </head>
 <body>
@@ -141,6 +178,9 @@ body{background:var(--dark);color:#e8d5b0;font-family:'Cinzel',serif;overflow:hi
     <a class="nav-link" href="https://dragonprimordial12-netizen.github.io/DragonP_El_Arte_del_Ajedrez/">Ajedrez</a>
     <a class="nav-link active" href="oraculo.html">Oráculo IA</a>
     <a class="nav-link" href="https://www.roblox.com/es/games/103451711855402/BESTIAS-Y-MONSTRUOS" target="_blank">🎮 Jugar</a>
+    <button class="nav-profile" id="navProfileBtn" onclick="openProfile()" title="Tu perfil de cazador">
+      <span class="nav-profile-dot"></span><span id="navProfileLabel">Perfil</span>
+    </button>
   </div>
 </nav>
 
@@ -272,6 +312,105 @@ INSTRUCCIONES DE COMPORTAMIENTO:
 - Si te preguntan sobre algo fuera del juego, redirige amablemente al tema del juego.`;
 
 // ═══════════════════════════════════════
+// PERFIL DE USUARIO — memoria local
+// ═══════════════════════════════════════
+const PROFILE_KEY = 'oraculo_perfil_v1';
+
+function loadProfile() {
+  try { return JSON.parse(localStorage.getItem(PROFILE_KEY)) || null; }
+  catch { return null; }
+}
+
+function profileExists() {
+  const p = loadProfile();
+  return !!(p && p.name);
+}
+
+function saveProfile() {
+  const name  = document.getElementById('profileName').value.trim();
+  const beast = document.getElementById('profileBeast').value;
+  const style = document.getElementById('profileStyle').value;
+  if (!name) { showToast('⚠ Dinos tu nombre, cazador.'); return; }
+  const profile = { name, beast, style, since: Date.now() };
+  localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+  document.getElementById('profileModal').classList.remove('open');
+  updateNavProfile(profile);
+  showToast('🔥 El Oráculo te recuerda, ' + name + '.');
+  history = [];
+  const msgs = document.getElementById('messages');
+  msgs.innerHTML = '';
+  const greet = buildGreeting(profile);
+  appendMsg('ai', greet);
+  history.push({ role:'assistant', content: greet });
+}
+
+function clearProfile() {
+  if (!confirm('¿Olvidar tu perfil? Perderás tu historial de esta sesión.')) return;
+  localStorage.removeItem(PROFILE_KEY);
+  location.reload();
+}
+
+function openProfile() {
+  const p = loadProfile();
+  if (p) {
+    document.getElementById('profileName').value  = p.name  || '';
+    document.getElementById('profileBeast').value = p.beast || '';
+    document.getElementById('profileStyle').value = p.style || '';
+    document.getElementById('profileCloseBtn').style.display = '';
+    document.getElementById('profileClearBtn').style.display = '';
+    document.querySelector('.profile-save').textContent = '🔥 Guardar cambios';
+    document.querySelector('.profile-modal-sub').textContent = 'Actualiza tu información, cazador. El Oráculo ajustará su memoria.';
+  }
+  document.getElementById('profileModal').classList.add('open');
+}
+
+function updateNavProfile(profile) {
+  const label = document.getElementById('navProfileLabel');
+  if (profile && profile.name) {
+    const beastEmoji = profile.beast ? ' · ' + profile.beast.split(' ')[0] : '';
+    label.textContent = profile.name + beastEmoji;
+  } else {
+    label.textContent = 'Perfil';
+  }
+}
+
+function buildGreeting(profile) {
+  const beastLine = profile.beast ? ` Has elegido caminar con **${profile.beast}** — una elección que habla de tu esencia.` : '';
+  const styleLine = profile.style === 'agresivo'   ? ' El fuego en tu sangre es el de los que atacan sin dudar.'
+                  : profile.style === 'tactico'    ? ' La mente que planea antes de golpear es temida en toda la Era Salvaje.'
+                  : profile.style === 'defensivo'  ? ' La paciencia es tu arma más afilada, y tu escudo nunca cede.'
+                  : profile.style === 'explorador' ? ' Los secretos más oscuros del mundo esperan a quien sabe buscarlos.'
+                  : profile.style === 'nuevo'      ? ' Todo gran depredador fue una vez cría. El camino comienza ahora.'
+                  : '';
+  return `*El Oráculo abre sus ojos de llama antigua...*\n\n**${profile.name}**... ese nombre resuena en las sombras de la Era Salvaje.${beastLine}${styleLine}\n\n¿Qué secreto del mundo salvaje deseas desenterrar hoy?`;
+}
+
+function buildSystemPrompt() {
+  const profile = loadProfile();
+  if (!profile || !profile.name) return SYSTEM_PROMPT;
+  const beastCtx = profile.beast ? `\n- Su bestia favorita es: ${profile.beast}. Personaliza consejos para esa bestia cuando sea relevante.` : '';
+  const styleCtx = profile.style ? `\n- Su estilo de juego es: ${profile.style}. Adapta consejos estratégicos a ese estilo.` : '';
+  return SYSTEM_PROMPT + `\n\n== PERFIL DEL JUGADOR ==\n- El jugador se llama: **${profile.name}**. Llámalo por su nombre ocasionalmente.${beastCtx}${styleCtx}\n- Trata a este jugador como a un guerrero conocido, no como a un extraño.`;
+}
+
+// ═══════════════════════════════════════
+// INIT — check profile on load
+// ═══════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  const profile = loadProfile();
+  if (!profile || !profile.name) {
+    document.getElementById('profileModal').classList.add('open');
+  } else {
+    updateNavProfile(profile);
+    const msgs = document.getElementById('messages');
+    msgs.innerHTML = '';
+    const greet = buildGreeting(profile);
+    appendMsg('ai', greet);
+    history.push({ role:'assistant', content: greet });
+  }
+});
+
+// ═══════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════
 let history = [];
@@ -285,7 +424,6 @@ async function sendMessage(text) {
   const msg = text || input.value.trim();
   if (!msg || isLoading) return;
 
-  // Hide welcome
   const welcome = document.getElementById('welcome');
   if (welcome) welcome.remove();
 
@@ -304,7 +442,7 @@ async function sendMessage(text) {
       method:'POST',
       headers:{ 'Content-Type':'application/json' },
       body: JSON.stringify({
-        system: SYSTEM_PROMPT,
+        system: buildSystemPrompt(),
         messages: history
       })
     });
@@ -441,5 +579,58 @@ drawEmbers();
     <div class="donate-thanks">Cada aporte es una llama más en la Era Salvaje 🐲🔥</div>
   </div>
 </div>
+<!-- PROFILE MODAL -->
+<div class="profile-overlay" id="profileModal" onclick="if(event.target===this&&profileExists())this.classList.remove('open')">
+  <div class="profile-modal">
+    <button class="profile-modal-close" id="profileCloseBtn" onclick="if(profileExists())document.getElementById('profileModal').classList.remove('open')" style="display:none">✕</button>
+    <div class="profile-modal-icon">🐲</div>
+    <div class="profile-modal-title">El Oráculo te reconoce</div>
+    <div class="profile-modal-sub">Dime tu nombre, cazador, y cuál es la bestia que habita en tu alma. El Oráculo recordará tu camino.</div>
+    <div class="profile-field">
+      <label class="profile-label" for="profileName">Tu nombre en la Era Salvaje</label>
+      <input class="profile-input" id="profileName" type="text" maxlength="32" placeholder="Ej: Kael, Zara, Fenris...">
+    </div>
+    <div class="profile-field">
+      <label class="profile-label" for="profileBeast">Tu bestia favorita</label>
+      <select class="profile-select" id="profileBeast">
+        <option value="">— Elige tu bestia —</option>
+        <optgroup label="💠 Bestias Puras">
+          <option value="🦁 León">🦁 León</option>
+          <option value="🐲 Dragón">🐲 Dragón</option>
+          <option value="🐍 Serpiente">🐍 Serpiente</option>
+          <option value="🐢 Tortuga">🐢 Tortuga</option>
+          <option value="🐦‍🔥 Fénix">🐦‍🔥 Fénix</option>
+          <option value="🦊 Zorro">🦊 Zorro</option>
+          <option value="🦖 Rey Lagarto Tirano">🦖 Rey Lagarto Tirano</option>
+          <option value="🦂 Escorpión">🦂 Escorpión</option>
+        </optgroup>
+        <optgroup label="🩸 Bestias Corruptas">
+          <option value="🕷️ Araña">🕷️ Araña</option>
+          <option value="🐳 Ballena">🐳 Ballena</option>
+          <option value="🦄 Unicornio">🦄 Unicornio</option>
+          <option value="🧪 Quimera">🧪 Quimera</option>
+          <option value="🐺 Lobo">🐺 Lobo</option>
+        </optgroup>
+        <optgroup label="⚖ Origen">
+          <option value="👤 Humano">👤 Humano</option>
+        </optgroup>
+      </select>
+    </div>
+    <div class="profile-field">
+      <label class="profile-label" for="profileStyle">Tu estilo de juego</label>
+      <select class="profile-select" id="profileStyle">
+        <option value="">— Elige tu estilo —</option>
+        <option value="agresivo">⚔️ Agresivo — ataco primero, pregunto después</option>
+        <option value="tactico">🧠 Táctico — planeo cada movimiento</option>
+        <option value="defensivo">🛡️ Defensivo — espero el error del rival</option>
+        <option value="explorador">🗺️ Explorador — descubro cada secreto del mundo</option>
+        <option value="nuevo">🌱 Nuevo jugador — aún aprendiendo</option>
+      </select>
+    </div>
+    <button class="profile-save" onclick="saveProfile()">🔥 Entrar a la Era Salvaje</button>
+    <button class="profile-clear" id="profileClearBtn" onclick="clearProfile()" style="display:none">Olvidar este perfil</button>
+  </div>
+</div>
+
 </body>
 </html>
