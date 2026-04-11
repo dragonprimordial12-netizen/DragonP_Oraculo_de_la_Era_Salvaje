@@ -112,6 +112,37 @@ body{background:var(--dark);color:#e8d5b0;font-family:'Cinzel',serif;overflow:hi
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @keyframes flicker{0%,100%{filter:drop-shadow(0 0 15px rgba(255,150,0,0.5))}50%{filter:drop-shadow(0 0 25px rgba(255,80,0,0.7))}}
 @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+/* DONATIONS */
+.donate-bar{display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;padding:0.5rem 1rem;
+  background:rgba(255,140,0,0.06);border-top:1px solid rgba(255,140,0,0.15);flex-shrink:0;position:relative;z-index:2;}
+.donate-label{font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,140,0,0.55);flex:1;min-width:120px;}
+.donate-btn{font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;
+  padding:0.35rem 0.9rem;border:1px solid;cursor:pointer;transition:all 0.2s;
+  clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);}
+.donate-btn.paypal{background:rgba(0,100,255,0.1);border-color:rgba(0,100,255,0.3);color:rgba(100,160,255,0.8);}
+.donate-btn.paypal:hover{background:rgba(0,100,255,0.2);color:#88bbff;}
+.donate-btn.deuna{background:rgba(0,200,100,0.08);border-color:rgba(0,200,100,0.25);color:rgba(0,220,120,0.7);}
+.donate-btn.deuna:hover{background:rgba(0,200,100,0.15);color:#00ff88;}
+.donate-close{background:transparent;border:none;color:rgba(255,140,0,0.3);cursor:pointer;font-size:0.9rem;padding:0.2rem 0.4rem;transition:color 0.2s;}
+.donate-close:hover{color:var(--gold);}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:200;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.open{display:flex;}
+.donate-modal{background:#0a0307;border:1px solid rgba(255,140,0,0.25);max-width:480px;width:100%;padding:2rem;position:relative;}
+.donate-modal-close{position:absolute;top:0.8rem;right:0.8rem;background:transparent;border:none;color:rgba(255,140,0,0.4);font-size:1rem;cursor:pointer;}
+.donate-modal-close:hover{color:var(--gold);}
+.donate-modal-title{font-family:'Cinzel Decorative',serif;font-size:1rem;color:var(--gold);margin-bottom:0.3rem;text-align:center;}
+.donate-modal-sub{font-family:'IM Fell English',serif;font-style:italic;color:#a08060;font-size:0.85rem;text-align:center;margin-bottom:1.5rem;}
+.donate-options{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;}
+.donate-option{background:rgba(255,140,0,0.04);border:1px solid rgba(255,140,0,0.12);padding:1rem;text-align:center;}
+.donate-option-icon{font-size:1.8rem;margin-bottom:0.4rem;}
+.donate-option-name{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:0.3rem;}
+.donate-option-name2{font-size:0.65rem;color:rgba(255,140,0,0.5);margin-top:0.2rem;}
+.donate-option-desc{font-family:'IM Fell English',serif;font-style:italic;font-size:0.75rem;color:#a08060;margin-bottom:0.5rem;}
+.donate-option-val{font-family:'Courier New',monospace;font-size:0.8rem;color:var(--teal);padding:0.3rem 0.5rem;background:rgba(0,200,160,0.07);border:1px solid rgba(0,200,160,0.15);margin-bottom:0.5rem;}
+.donate-action{display:inline-block;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.4rem 0.9rem;background:rgba(0,100,255,0.15);border:1px solid rgba(0,100,255,0.3);color:rgba(100,160,255,0.9);text-decoration:none;transition:all 0.2s;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);}
+.donate-action:hover{background:rgba(0,100,255,0.25);color:#88bbff;}
+.donate-thanks{font-family:'IM Fell English',serif;font-style:italic;font-size:0.85rem;color:#a08060;text-align:center;}
 </style>
 </head>
 <body>
@@ -163,6 +194,14 @@ body{background:var(--dark);color:#e8d5b0;font-family:'Cinzel',serif;overflow:hi
     </div>
   </div>
 
+
+  <!-- DONATIONS -->
+  <div class="donate-bar" id="donatebar">
+    <span class="donate-label">🔥 Apoya al Dragón Primordial</span>
+    <button class="donate-btn paypal" onclick="document.getElementById('donateModal').classList.add('open')">💙 PayPal</button>
+    <button class="donate-btn deuna" onclick="document.getElementById('donateModal').classList.add('open')">🟢 DeUna</button>
+    <button class="donate-close" onclick="document.getElementById('donatebar').style.display='none'">✕</button>
+  </div>
   <!-- INPUT -->
   <div class="input-area">
     <div class="input-row">
@@ -258,7 +297,7 @@ INSTRUCCIONES DE COMPORTAMIENTO:
 // ═══════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════
-let apiKey = 'ok';
+let apiKey = 'ok'; // Gemini via Worker
 let history = [];
 let isLoading = false;
 
@@ -274,9 +313,7 @@ function saveKey() {
   showToast('🔥 ¡Oráculo activado!');
 }
 
-function checkKey() { document.getElementById('apikeyBanner').classList.add('hidden'); return; //
-  if (apiKey) document.getElementById('apikeyBanner').classList.add('hidden');
-}
+function checkKey() { document.getElementById('apikeyBanner').classList.add('hidden'); }
 
 // ═══════════════════════════════════════
 // SEND MESSAGE
@@ -427,5 +464,31 @@ drawEmbers();
 // INIT
 checkKey();
 </script>
+
+<!-- DONATE MODAL -->
+<div class="modal-overlay" id="donateModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="donate-modal">
+    <button class="donate-modal-close" onclick="document.getElementById('donateModal').classList.remove('open')">✕</button>
+    <div class="donate-modal-title">🔥 Apoya al Dragón Primordial</div>
+    <div class="donate-modal-sub">Tu apoyo mantiene vivo el mundo salvaje</div>
+    <div class="donate-options">
+      <div class="donate-option">
+        <div class="donate-option-icon">💙</div>
+        <div class="donate-option-name">PayPal</div>
+        <div class="donate-option-desc">Escanea el QR o busca en PayPal</div>
+        <div class="donate-option-val">@DragonPrimordial</div>
+        <a class="donate-action" href="https://paypal.me/DragonPrimordial" target="_blank">Abrir PayPal →</a>
+      </div>
+      <div class="donate-option">
+        <div class="donate-option-icon">🟢</div>
+        <div class="donate-option-name">DeUna / Banco Pichincha</div>
+        <div class="donate-option-desc">Cuenta de ahorro transaccional</div>
+        <div class="donate-option-val">2215350861</div>
+        <div class="donate-option-name2">Francisco Reinaldo</div>
+      </div>
+    </div>
+    <div class="donate-thanks">Cada aporte es una llama más en la Era Salvaje 🐲🔥</div>
+  </div>
+</div>
 </body>
 </html>
