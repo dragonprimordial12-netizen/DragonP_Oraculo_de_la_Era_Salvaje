@@ -1,4 +1,4 @@
-<!--🔥 Or-culo-de-la-Era-Salvaje 🔥-->
+<!--🔥 Oráculo de la Era Salvaje 🔥-->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -253,7 +253,7 @@ INSTRUCCIONES DE COMPORTAMIENTO:
 // ═══════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════
-let apiKey = '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';
+let apiKey = 'ok';
 let history = [];
 let isLoading = false;
 
@@ -299,9 +299,9 @@ async function sendMessage(text) {
   const typingEl = appendTyping();
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://dry-rice-9d84.dragonprimordial12.workers.dev/', {
       method:'POST',
-      headers:{ 'Content-Type':'application/json', 'x-api-key': apiKey, 'anthropic-version':'2023-06-01' },
+      headers:{ 'Content-Type':'application/json' },
       body: JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:1000,
