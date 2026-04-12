@@ -446,23 +446,23 @@ async function sendMessage(text) {
   try {
     // 🔥 Mantener solo los últimos 20 mensajes
     const recentHistory = history.slice(-20);
+
+
+// DESPUÉS — solo lo que necesita el Worker
+const res = await fetch('https://tiny-snow-0b3e.dragonprimordial12.workers.dev/', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'    // ✅ suficiente
+  },
+  body: JSON.stringify({
+    model: CLAUDE_MODEL,
+    max_tokens: 1024,
+    system: buildSystemPrompt(),
+    messages: recentHistory
+  })
+});
+
     
-    const res = await fetch('https://tiny-snow-0b3e.dragonprimordial12.workers.dev/', {
-
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': CLAUDE_API_KEY,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: CLAUDE_MODEL,
-        max_tokens: 1024,
-        system: buildSystemPrompt(),
-        messages: recentHistory
-      })
-    });
-
     typingEl.remove();
 
     if (!res.ok) {
