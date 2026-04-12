@@ -232,7 +232,7 @@ body{background:var(--dark);color:#e8d5b0;font-family:'Cinzel',serif;overflow:hi
 <div class="toast" id="toast"></div>
 
 <script>
-// ═════════════════════════════════��═════
+// ═══════════════════════════════════════
 // LORE DEL JUEGO — contexto completo
 // ═══════════════════════════════════════
 const SYSTEM_PROMPT = `Eres el Oráculo de la Era Salvaje, el guardián del conocimiento del juego "Bestias y Monstruos" en Roblox. Hablas con un tono épico, misterioso y sabio, como un anciano guardián. 
@@ -312,9 +312,10 @@ INSTRUCCIONES DE COMPORTAMIENTO:
 - Si te preguntan sobre algo fuera del juego, redirige amablemente al tema del juego.`;
 
 // ═══════════════════════════════════════
-// CLAUDE API KEY
+// CONFIG
 // ═══════════════════════════════════════
-const CLAUDE_MODEL = 'claude-3-5-sonnet-20241022';
+const CLAUDE_MODEL   = 'claude-3-5-sonnet-20241022';
+const WORKER_URL     = 'https://tiny-snow-0b3e.dragonprimordial12.workers.dev/';
 
 // ═══════════════════════════════════════
 // PERFIL DE USUARIO — memoria local
@@ -422,7 +423,7 @@ let history = [];
 let isLoading = false;
 
 // ═══════════════════════════════════════
-// SEND MESSAGE — Con Claude API
+// SEND MESSAGE — vía Cloudflare Worker
 // ═══════════════════════════════════════
 async function sendMessage(text) {
   const input = document.getElementById('chatInput');
@@ -447,28 +448,26 @@ async function sendMessage(text) {
     // 🔥 Mantener solo los últimos 20 mensajes
     const recentHistory = history.slice(-20);
 
+    // ✅ Solo Content-Type — el Worker maneja la API key y anthropic-version
+    const res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: CLAUDE_MODEL,
+        max_tokens: 1024,
+        system: buildSystemPrompt(),
+        messages: recentHistory
+      })
+    });
 
-// DESPUÉS — solo lo que necesita el Worker
-const res = await fetch('https://tiny-snow-0b3e.dragonprimordial12.workers.dev/', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'    // ✅ suficiente
-  },
-  body: JSON.stringify({
-    model: CLAUDE_MODEL,
-    max_tokens: 1024,
-    system: buildSystemPrompt(),
-    messages: recentHistory
-  })
-});
-
-    
     typingEl.remove();
 
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       const errMsg = err.error?.message || `Error ${res.status}`;
-      
+
       if (res.status === 401) {
         showToast('🔴 Clave API inválida');
       } else if (res.status === 429) {
@@ -481,10 +480,9 @@ const res = await fetch('https://tiny-snow-0b3e.dragonprimordial12.workers.dev/'
       const data = await res.json();
       const reply = data?.content?.[0]?.text || '...el oráculo contempla en silencio...';
       const formattedReply = reply.replace(/\n{3,}/g, '\n\n');
-      
+
       appendMsg('ai', formattedReply);
       history.push({ role:'assistant', content: formattedReply });
-      showToast('✅ El Oráculo ha hablado');
     }
   } catch(e) {
     typingEl.remove();
@@ -606,6 +604,7 @@ drawEmbers();
     <div class="donate-thanks">Cada aporte es una llama más en la Era Salvaje 🐲🔥</div>
   </div>
 </div>
+
 <!-- PROFILE MODAL -->
 <div class="profile-overlay" id="profileModal" onclick="if(event.target===this&&profileExists())this.classList.remove('open')">
   <div class="profile-modal">
