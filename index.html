@@ -312,10 +312,10 @@ INSTRUCCIONES DE COMPORTAMIENTO:
 - Si te preguntan sobre algo fuera del juego, redirige amablemente al tema del juego.`;
 
 // ═══════════════════════════════════════
-// CONFIG
+// CLAUDE API KEY
 // ═══════════════════════════════════════
-const CLAUDE_MODEL   = 'claude-3-5-sonnet-20241022';
-const WORKER_URL     = 'https://tiny-snow-0b3e.dragonprimordial12.workers.dev/';
+const CLAUDE_API_KEY = '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';
+const CLAUDE_MODEL = 'claude-3-5-sonnet-20241022';
 
 // ═══════════════════════════════════════
 // PERFIL DE USUARIO — memoria local
@@ -423,7 +423,7 @@ let history = [];
 let isLoading = false;
 
 // ═══════════════════════════════════════
-// SEND MESSAGE — vía Cloudflare Worker
+// SEND MESSAGE — Con Claude API
 // ═══════════════════════════════════════
 async function sendMessage(text) {
   const input = document.getElementById('chatInput');
@@ -447,12 +447,13 @@ async function sendMessage(text) {
   try {
     // 🔥 Mantener solo los últimos 20 mensajes
     const recentHistory = history.slice(-20);
-
-    // ✅ Solo Content-Type — el Worker maneja la API key y anthropic-version
-    const res = await fetch(WORKER_URL, {
+    
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'x-api-key': CLAUDE_API_KEY,
+        'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
         model: CLAUDE_MODEL,
@@ -467,7 +468,7 @@ async function sendMessage(text) {
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       const errMsg = err.error?.message || `Error ${res.status}`;
-
+      
       if (res.status === 401) {
         showToast('🔴 Clave API inválida');
       } else if (res.status === 429) {
@@ -480,9 +481,10 @@ async function sendMessage(text) {
       const data = await res.json();
       const reply = data?.content?.[0]?.text || '...el oráculo contempla en silencio...';
       const formattedReply = reply.replace(/\n{3,}/g, '\n\n');
-
+      
       appendMsg('ai', formattedReply);
       history.push({ role:'assistant', content: formattedReply });
+      showToast('✅ El Oráculo ha hablado');
     }
   } catch(e) {
     typingEl.remove();
@@ -604,7 +606,6 @@ drawEmbers();
     <div class="donate-thanks">Cada aporte es una llama más en la Era Salvaje 🐲🔥</div>
   </div>
 </div>
-
 <!-- PROFILE MODAL -->
 <div class="profile-overlay" id="profileModal" onclick="if(event.target===this&&profileExists())this.classList.remove('open')">
   <div class="profile-modal">
