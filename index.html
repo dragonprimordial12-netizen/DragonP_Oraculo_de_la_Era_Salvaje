@@ -15,12 +15,14 @@
   --fire:#ff4d00;--ember:#ff8c00;--gold:#ffd700;
   --dark:#050305;--deep:#0d0509;--blood:#8b0000;
   --teal:#00c8a0;--purple:#9b00ff;--card-bg:rgba(20,5,10,0.88);
+  --paypal-blue:#003087;--paypal-glow:rgba(0,160,255,0.6);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{height:100%;}
 body{background:var(--dark);color:#e8d5b0;font-family:'Cinzel',serif;overflow:hidden;display:flex;flex-direction:column;}
 #particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
 #celebCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:500;display:none;}
+#coinCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:490;display:none;}
 .top-nav{display:flex;align-items:center;justify-content:space-between;padding:0.65rem 1.5rem;background:rgba(8,2,6,0.97);border-bottom:1px solid rgba(255,140,0,0.12);position:relative;z-index:10;flex-shrink:0;flex-wrap:wrap;gap:0.4rem;}
 .nav-logo{font-family:'Cinzel Decorative',serif;font-size:0.75rem;color:var(--gold);text-decoration:none;filter:drop-shadow(0 0 8px rgba(255,200,0,0.3));}
 .nav-links{display:flex;gap:0.4rem;flex-wrap:wrap;}
@@ -72,8 +74,10 @@ body{background:var(--dark);color:#e8d5b0;font-family:'Cinzel',serif;overflow:hi
 .send-btn:hover:not(:disabled){box-shadow:0 0 35px rgba(255,120,0,0.5);transform:translateY(-1px);}
 .send-btn:disabled{opacity:0.45;cursor:not-allowed;transform:none;}
 .input-hint{font-size:0.55rem;letter-spacing:0.15em;color:rgba(255,140,0,0.25);margin-top:0.4rem;text-align:right;}
-.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(255,50,50,0.15);border:1px solid rgba(255,80,80,0.3);color:#ff9999;font-family:'Cinzel',serif;font-size:0.75rem;padding:0.6rem 1rem;border-radius:4px;z-index:1000;opacity:0;transition:opacity 0.3s;}
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(255,50,50,0.15);border:1px solid rgba(255,80,80,0.3);color:#ff9999;font-family:'Cinzel',serif;font-size:0.75rem;padding:0.6rem 1rem;border-radius:4px;z-index:1000;opacity:0;transition:opacity 0.3s,transform 0.3s;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.blue{background:rgba(0,100,255,0.2);border-color:rgba(0,160,255,0.35);color:#88ccff;}
+.toast.gold{background:rgba(255,180,0,0.15);border-color:rgba(255,200,0,0.35);color:var(--gold);}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 @keyframes flicker{0%,100%{filter:drop-shadow(0 0 15px rgba(255,150,0,0.5))}50%{filter:drop-shadow(0 0 25px rgba(255,80,0,0.7))}}
 @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
@@ -93,16 +97,160 @@ body{background:var(--dark);color:#e8d5b0;font-family:'Cinzel',serif;overflow:hi
 .donate-modal-close:hover{color:var(--gold);}
 .donate-modal-title{font-family:'Cinzel Decorative',serif;font-size:1rem;color:var(--gold);margin-bottom:0.3rem;text-align:center;}
 .donate-modal-sub{font-family:'IM Fell English',serif;font-style:italic;color:#a08060;font-size:0.85rem;text-align:center;margin-bottom:1.5rem;}
-.donate-options{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;}
+.donate-options{display:grid;grid-template-columns:1fr;gap:1rem;margin-bottom:1.5rem;}
 .donate-option{background:rgba(255,140,0,0.04);border:1px solid rgba(255,140,0,0.12);padding:1rem;text-align:center;}
 .donate-option-icon{font-size:1.8rem;margin-bottom:0.4rem;}
 .donate-option-name{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:0.3rem;}
 .donate-option-name2{font-size:0.65rem;color:rgba(255,140,0,0.5);margin-top:0.2rem;}
 .donate-option-desc{font-family:'IM Fell English',serif;font-style:italic;font-size:0.75rem;color:#a08060;margin-bottom:0.5rem;}
 .donate-option-val{font-family:'Courier New',monospace;font-size:0.8rem;color:var(--teal);padding:0.3rem 0.5rem;background:rgba(0,200,160,0.07);border:1px solid rgba(0,200,160,0.15);margin-bottom:0.5rem;border-radius:2px;}
-.donate-action{display:inline-block;font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.4rem 0.9rem;background:rgba(0,100,255,0.15);border:1px solid rgba(0,100,255,0.25);color:rgba(100,160,255,0.9);text-decoration:none;cursor:pointer;transition:all 0.2s;}
-.donate-action:hover{background:rgba(0,100,255,0.25);color:#88bbff;}
 .donate-thanks{font-family:'IM Fell English',serif;font-style:italic;font-size:0.85rem;color:#a08060;text-align:center;}
+
+/* ========================= */
+/* 💙 DONATION COUNTER */
+/* ========================= */
+.donate-counter-wrap{
+  text-align:center;
+  margin-bottom:1.2rem;
+  padding:0.7rem;
+  background:rgba(0,80,200,0.07);
+  border:1px solid rgba(0,120,255,0.15);
+}
+.donate-counter-label{
+  font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;
+  color:rgba(0,180,255,0.5);margin-bottom:0.3rem;
+}
+.donate-counter-val{
+  font-family:'Cinzel Decorative',serif;
+  font-size:1.4rem;
+  color:#66bbff;
+  filter:drop-shadow(0 0 8px rgba(0,160,255,0.5));
+  transition:all 0.4s;
+}
+.donate-counter-sub{
+  font-family:'IM Fell English',serif;font-style:italic;
+  font-size:0.72rem;color:rgba(0,180,255,0.4);margin-top:0.2rem;
+}
+
+/* ========================= */
+/* 💙 PAYPAL ULTRA EFFECT */
+/* ========================= */
+.paypal-ultra{
+  position:relative;
+  overflow:hidden;
+  transition:all 0.25s;
+  display:inline-block;
+  font-family:'Cinzel',serif;
+  font-size:0.72rem;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  padding:0.65rem 1.4rem;
+  background:linear-gradient(135deg,rgba(0,80,200,0.25),rgba(0,140,255,0.15));
+  border:1px solid rgba(0,140,255,0.35);
+  color:rgba(100,180,255,0.95);
+  text-decoration:none;
+  cursor:pointer;
+  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+  box-shadow:0 0 18px rgba(0,120,255,0.2);
+}
+.paypal-ultra::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,transparent 0%,rgba(0,180,255,0.15) 50%,transparent 100%);
+  transform:translateX(-100%);
+  transition:transform 0.4s;
+}
+.paypal-ultra:hover::before{transform:translateX(100%);}
+.paypal-ultra:hover{
+  box-shadow:0 0 35px rgba(0,160,255,0.55);
+  transform:translateY(-2px) scale(1.03);
+  border-color:rgba(0,200,255,0.6);
+  color:#aaddff;
+}
+.paypal-ultra.burst{
+  animation:paypalPulse 0.55s ease;
+}
+@keyframes paypalPulse{
+  0%{transform:scale(1);}
+  25%{transform:scale(1.18) translateY(-2px);}
+  55%{transform:scale(0.93);}
+  80%{transform:scale(1.05);}
+  100%{transform:scale(1);}
+}
+
+/* FLASH AZUL EXPLOSIÓN */
+#paypalFlash{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:600;
+  background:radial-gradient(circle at 50% 50%,
+    rgba(0,180,255,0.55) 0%,
+    rgba(0,100,255,0.28) 30%,
+    rgba(0,60,200,0.1) 55%,
+    transparent 75%);
+  opacity:0;
+  display:none;
+}
+#paypalFlash.active{
+  display:block;
+  animation:flashBoom 0.85s ease-out forwards;
+}
+@keyframes flashBoom{
+  0%{opacity:0;transform:scale(0.6);}
+  18%{opacity:1;transform:scale(1.05);}
+  60%{opacity:0.55;transform:scale(1);}
+  100%{opacity:0;transform:scale(1.1);}
+}
+
+/* RIPPLE RING */
+.paypal-ring{
+  position:fixed;
+  pointer-events:none;
+  z-index:601;
+  border-radius:50%;
+  border:2px solid rgba(0,200,255,0.7);
+  transform:translate(-50%,-50%) scale(0);
+  animation:ringExpand 0.8s ease-out forwards;
+}
+@keyframes ringExpand{
+  0%{transform:translate(-50%,-50%) scale(0);opacity:1;}
+  100%{transform:translate(-50%,-50%) scale(8);opacity:0;}
+}
+
+/* TEXTO FLOTANTE OFRENDA */
+.ofrenda-text{
+  position:fixed;
+  pointer-events:none;
+  z-index:602;
+  font-family:'Cinzel Decorative',serif;
+  font-size:0.85rem;
+  color:#66ddff;
+  text-shadow:0 0 12px rgba(0,200,255,0.8);
+  animation:ofrendaFloat 2s ease-out forwards;
+  white-space:nowrap;
+}
+@keyframes ofrendaFloat{
+  0%{opacity:0;transform:translateY(0) translateX(-50%) scale(0.7);}
+  20%{opacity:1;transform:translateY(-10px) translateX(-50%) scale(1.1);}
+  70%{opacity:1;transform:translateY(-40px) translateX(-50%) scale(1);}
+  100%{opacity:0;transform:translateY(-65px) translateX(-50%) scale(0.9);}
+}
+
+/* FIRE BURST */
+#fireBurst{
+  position:fixed;inset:0;pointer-events:none;z-index:490;display:none;
+  background:radial-gradient(ellipse at 50% 110%,rgba(255,60,0,0.45) 0%,rgba(255,120,0,0.2) 35%,transparent 70%);
+  animation:fireBurstAnim 1.8s ease-out forwards;
+}
+@keyframes fireBurstAnim{
+  0%{opacity:0;transform:scaleY(0.3);transform-origin:bottom;}
+  20%{opacity:1;transform:scaleY(1.1);}
+  60%{opacity:0.7;}
+  100%{opacity:0;transform:scaleY(1);}
+}
+
 .nav-profile{display:flex;align-items:center;gap:0.4rem;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,200,100,0.6);cursor:pointer;padding:0.3rem 0.75rem;border:1px solid rgba(255,200,0,0.15);clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);transition:all 0.2s;background:transparent;}
 .nav-profile:hover{color:var(--gold);border-color:rgba(255,200,0,0.4);background:rgba(255,150,0,0.08);}
 .nav-profile-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 6px var(--teal);flex-shrink:0;}
@@ -125,14 +273,14 @@ body{background:var(--dark);color:#e8d5b0;font-family:'Cinzel',serif;overflow:hi
 .profile-save:hover{box-shadow:0 0 35px rgba(255,120,0,0.5);transform:translateY(-1px);}
 .profile-clear{width:100%;background:transparent;border:1px solid rgba(255,60,60,0.2);color:rgba(255,100,100,0.45);font-family:'Cinzel',serif;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;padding:0.45rem;cursor:pointer;transition:all 0.2s;margin-top:0.5rem;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);}
 .profile-clear:hover{border-color:rgba(255,60,60,0.45);color:rgba(255,120,120,0.7);}
-#fireBurst{position:fixed;inset:0;pointer-events:none;z-index:490;display:none;background:radial-gradient(ellipse at 50% 110%,rgba(255,60,0,0.45) 0%,rgba(255,120,0,0.2) 35%,transparent 70%);animation:fireBurstAnim 1.8s ease-out forwards;}
-@keyframes fireBurstAnim{0%{opacity:0;transform:scaleY(0.3);transform-origin:bottom;}20%{opacity:1;transform:scaleY(1.1);}60%{opacity:0.7;}100%{opacity:0;transform:scaleY(1);}}
 </style>
 </head>
 <body>
 <canvas id="particles"></canvas>
 <canvas id="celebCanvas"></canvas>
+<canvas id="coinCanvas"></canvas>
 <div id="fireBurst"></div>
+<div id="paypalFlash"></div>
 
 <nav class="top-nav">
   <a class="nav-logo" href="index.html">🔥 Dragón Primordial</a>
@@ -177,8 +325,8 @@ body{background:var(--dark);color:#e8d5b0;font-family:'Cinzel',serif;overflow:hi
 
   <div class="donate-bar" id="donatebar">
     <span class="donate-label">🔥 Apoya al Dragón Primordial</span>
-    <button class="donate-btn paypal" onclick="document.getElementById('donateModal').classList.add('open')">💙 PayPal</button>
-    <button class="donate-btn deuna" onclick="document.getElementById('donateModal').classList.add('open')">🟢 DeUna</button>
+    <button class="donate-btn paypal" onclick="document.getElementById('donateModal').classList.add('open');updateDonateCounter()">💙 PayPal</button>
+    <!-- <button class="donate-btn deuna" onclick="document.getElementById('donateModal').classList.add('open')">🟢 DeUna</button> -->
     <button class="donate-close" onclick="document.getElementById('donatebar').style.display='none'">✕</button>
   </div>
 
@@ -195,9 +343,7 @@ body{background:var(--dark);color:#e8d5b0;font-family:'Cinzel',serif;overflow:hi
 
 <script>
 // =========================================
-// POLLINATIONS TEXT API — igual que Arte IA
-// Sin claves, sin Worker, sin CORS
-// POST https://text.pollinations.ai/openai
+// POLLINATIONS TEXT API
 // =========================================
 const POLLINATIONS_URL = 'https://text.pollinations.ai/openai';
 
@@ -219,7 +365,196 @@ SECRETOS: Hay bestias ocultas. Los iconos de hielo y planta sugieren criaturas e
 
 REGLAS: Responde SIEMPRE en espanol. Usa emojis de bestias. Si no sabes algo, di "permanece oculto en las sombras...". Maximo 3-4 parrafos. Tono de oraculo anciano epico. Si preguntan fuera del juego, redirige amablemente.`;
 
+// =========================================
+// DONATION COUNTER (localStorage)
+// =========================================
+const DONATE_KEY = 'oraculo_donate_clicks_v1';
+const DONATE_MESSAGES = [
+  '🐲 El Dragón recuerda tu ofrenda...',
+  '🔥 Que las llamas guíen tu camino, mecenas...',
+  '⚡ La Era Salvaje te lo recompensará...',
+  '💙 Tu generosidad fortalece el mundo salvaje...',
+  '🌟 Una llama más arde en tu nombre...',
+  '🐺 Los espíritus del bosque te agradecen...',
+];
+let donateClicks = 0;
+
+function getDonateCount(){
+  try{ return parseInt(localStorage.getItem(DONATE_KEY))||0; }catch{ return 0; }
+}
+function incDonateCount(){
+  try{
+    const n = getDonateCount()+1;
+    localStorage.setItem(DONATE_KEY, n);
+    return n;
+  }catch{ return 1; }
+}
+function updateDonateCounter(){
+  const el = document.getElementById('donateCounterVal');
+  if(el){
+    const n = getDonateCount();
+    el.textContent = '💙 '.repeat(Math.min(n,8)) + (n > 8 ? '...' : '');
+  }
+}
+
+// =========================================
+// PAYPAL ULTRA EFFECT
+// =========================================
+function paypalEffect(el, event){
+  // 1. INCREMENTAR CONTADOR
+  const n = incDonateCount();
+  donateClicks = n;
+  updateDonateCounter();
+
+  // 2. BURST DEL BOTÓN
+  el.classList.add('burst');
+  setTimeout(()=>el.classList.remove('burst'), 600);
+
+  // 3. FLASH AZUL
+  const flash = document.getElementById('paypalFlash');
+  flash.classList.remove('active');
+  void flash.offsetWidth; // reflow
+  flash.classList.add('active');
+  setTimeout(()=>flash.classList.remove('active'), 900);
+
+  // 4. RIPPLE RINGS (múltiples)
+  const cx = window.innerWidth/2;
+  const cy = window.innerHeight/2;
+  [0, 120, 240].forEach(delay => {
+    setTimeout(()=>{
+      const ring = document.createElement('div');
+      ring.className = 'paypal-ring';
+      ring.style.cssText = `left:${cx}px;top:${cy}px;width:80px;height:80px;`;
+      document.body.appendChild(ring);
+      setTimeout(()=>ring.remove(), 900);
+    }, delay);
+  });
+
+  // 5. TEXTO FLOTANTE
+  const msgs = DONATE_MESSAGES;
+  const msg = msgs[Math.floor(Math.random()*msgs.length)];
+  const txt = document.createElement('div');
+  txt.className = 'ofrenda-text';
+  txt.textContent = msg;
+  txt.style.cssText = `left:${cx}px;top:${cy-60}px;`;
+  document.body.appendChild(txt);
+  setTimeout(()=>txt.remove(), 2100);
+
+  // 6. FIRE BURST
+  const fire = document.getElementById('fireBurst');
+  fire.style.display='block';
+  setTimeout(()=>fire.style.display='none', 1400);
+
+  // 7. LLUVIA DE MONEDAS
+  triggerCoinRain();
+
+  // 8. TOAST DORADO
+  const toastMsgs = [
+    '💙 El Dragón recibe tu ofrenda...',
+    '🔥 Que las llamas te acompañen!',
+    '⚡ Gracias, guerrero de la Era Salvaje!',
+  ];
+  showToast(toastMsgs[Math.floor(Math.random()*toastMsgs.length)], 'gold');
+}
+
+// =========================================
+// LLUVIA DE MONEDAS / COIN RAIN
+// =========================================
+function triggerCoinRain(){
+  const cv = document.getElementById('coinCanvas');
+  cv.style.display = 'block';
+  cv.width = window.innerWidth;
+  cv.height = window.innerHeight;
+  const ctx = cv.getContext('2d');
+
+  const COIN_COLORS = ['#ffd700','#ffcc00','#ffe066','#ffb700','#00c8ff','#66ddff'];
+  const COIN_EMOJIS = ['💙','💰','⚡','🌟','🔥','💎'];
+
+  const coins = Array.from({length:70}, () => ({
+    x: Math.random() * cv.width,
+    y: -30 - Math.random() * 200,
+    vy: Math.random() * 5 + 3,
+    vx: (Math.random()-0.5) * 2.5,
+    rot: Math.random() * 360,
+    rotV: (Math.random()-0.5) * 12,
+    size: Math.random() * 14 + 8,
+    alpha: 1,
+    color: COIN_COLORS[Math.floor(Math.random()*COIN_COLORS.length)],
+    emoji: Math.random() < 0.25 ? COIN_EMOJIS[Math.floor(Math.random()*COIN_EMOJIS.length)] : null,
+    wobble: Math.random() * Math.PI * 2,
+    wobbleSpeed: Math.random() * 0.12 + 0.04,
+    isCoin: Math.random() > 0.25,
+  }));
+
+  let frame = 0;
+  function drawCoins(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    let alive = false;
+    coins.forEach(c => {
+      c.vy += 0.18;
+      c.vx *= 0.99;
+      c.x += c.vx + Math.sin(c.wobble) * 0.5;
+      c.y += c.vy;
+      c.rot += c.rotV;
+      c.wobble += c.wobbleSpeed;
+      if(frame > 55) c.alpha -= 0.018;
+      c.alpha = Math.max(0, c.alpha);
+      if(c.alpha > 0 && c.y < cv.height + 50) alive = true;
+
+      ctx.save();
+      ctx.globalAlpha = c.alpha;
+      ctx.translate(c.x, c.y);
+      ctx.rotate(c.rot * Math.PI/180);
+
+      if(c.emoji){
+        ctx.font = c.size + 'px serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(c.emoji, 0, 0);
+      } else if(c.isCoin){
+        // Moneda con brillo
+        const scaleX = Math.abs(Math.cos(c.wobble));
+        ctx.scale(scaleX < 0.08 ? 0.08 : scaleX, 1);
+        const g = ctx.createRadialGradient(-c.size*0.3,-c.size*0.3,0,0,0,c.size);
+        g.addColorStop(0,'#fff8cc');
+        g.addColorStop(0.4, c.color);
+        g.addColorStop(1,'#a07000');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.ellipse(0,0,c.size,c.size*0.9,0,0,Math.PI*2);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,200,0.4)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        // Brillo
+        ctx.fillStyle = 'rgba(255,255,255,0.35)';
+        ctx.beginPath();
+        ctx.ellipse(-c.size*0.25,-c.size*0.25,c.size*0.28,c.size*0.18,Math.PI*-0.3,0,Math.PI*2);
+        ctx.fill();
+      } else {
+        // Chispa
+        ctx.fillStyle = c.color;
+        ctx.beginPath();
+        ctx.arc(0,0,c.size*0.35,0,Math.PI*2);
+        ctx.fill();
+      }
+      ctx.restore();
+    });
+
+    frame++;
+    if(alive && frame < 200){
+      requestAnimationFrame(drawCoins);
+    } else {
+      ctx.clearRect(0,0,cv.width,cv.height);
+      cv.style.display='none';
+    }
+  }
+  drawCoins();
+}
+
+// =========================================
 // PERFIL
+// =========================================
 const PROFILE_KEY = 'oraculo_perfil_v1';
 function loadProfile(){ try{ return JSON.parse(localStorage.getItem(PROFILE_KEY))||null; }catch{ return null; } }
 function profileExists(){ const p=loadProfile(); return !!(p&&p.name); }
@@ -288,9 +623,11 @@ function buildMessages(userMsg){
   return msgs;
 }
 
-// CELEBRACION
+// =========================================
+// CELEBRACIÓN (al crear perfil nuevo)
+// =========================================
 function triggerCelebration(name){
-  showToast('Bienvenido a la Era Salvaje, '+name+'!');
+  showToast('Bienvenido a la Era Salvaje, '+name+'!', 'gold');
   const fire=document.getElementById('fireBurst');
   fire.style.display='block';
   setTimeout(()=>fire.style.display='none',1800);
@@ -299,7 +636,6 @@ function triggerCelebration(name){
   cv.width=window.innerWidth; cv.height=window.innerHeight;
   const cx=cv.getContext('2d');
   const COLORS=['#ffd700','#ff8c00','#ff4500','#ff2200','#ffffff','#9b00ff','#ff6600','#ffcc00'];
-  const EMOJIS=['fire','bolt','star','dragon'];
   const parts=[];
   for(let i=0;i<220;i++){
     const ie=Math.random()<0.15;
@@ -353,7 +689,9 @@ function triggerCelebration(name){
   draw();
 }
 
+// =========================================
 // INIT
+// =========================================
 window.addEventListener('DOMContentLoaded',()=>{
   const p=loadProfile();
   if(!p||!p.name){ document.getElementById('profileModal').classList.add('open'); }
@@ -364,12 +702,15 @@ window.addEventListener('DOMContentLoaded',()=>{
     appendMsg('ai',greet);
     history.push({role:'assistant',content:greet});
   }
+  updateDonateCounter();
 });
 
 let history=[];
 let isLoading=false;
 
+// =========================================
 // SEND — Pollinations AI
+// =========================================
 async function sendMessage(text){
   const input=document.getElementById('chatInput');
   const msg=text||input.value.trim();
@@ -434,16 +775,23 @@ function appendTyping(){
 
 function handleKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();} }
 function autoResize(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,120)+'px'; }
-function showToast(msg){
+
+function showToast(msg, type=''){
   const t=document.getElementById('toast');
+  t.className='toast'+(type?' '+type:'');
   t.textContent=msg; t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),3500);
 }
 
-// PARTICLES
+// PARTICLES — EMBERS
 const canvas=document.getElementById('particles'),ctx=canvas.getContext('2d');
 let W=canvas.width=window.innerWidth,H=canvas.height=window.innerHeight;
-window.addEventListener('resize',()=>{W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;});
+window.addEventListener('resize',()=>{
+  W=canvas.width=window.innerWidth;
+  H=canvas.height=window.innerHeight;
+  const cc=document.getElementById('coinCanvas');
+  if(cc.style.display!=='none'){cc.width=W;cc.height=H;}
+});
 const embers=Array.from({length:55},()=>({x:Math.random()*window.innerWidth,y:window.innerHeight+Math.random()*100,size:Math.random()*2+0.4,speed:Math.random()*0.6+0.15,drift:(Math.random()-0.5)*0.3,alpha:Math.random()*0.45+0.07,hue:Math.random()*60+5}));
 function drawEmbers(){
   ctx.clearRect(0,0,W,H);
@@ -459,38 +807,61 @@ function drawEmbers(){
 drawEmbers();
 </script>
 
-<!-- DONATE MODAL -->
+<!-- ========================= -->
+<!-- DONATE MODAL              -->
+<!-- ========================= -->
 <div class="modal-overlay" id="donateModal" onclick="if(event.target===this)this.classList.remove('open')">
   <div class="donate-modal">
-    <button class="donate-modal-close" onclick="document.getElementById('donateModal').classList.remove('open')">X</button>
-    <div class="donate-modal-title">Apoya al Dragon Primordial</div>
-    <div class="donate-modal-sub">Tu apoyo mantiene vivo el mundo salvaje</div>
+    <button class="donate-modal-close" onclick="document.getElementById('donateModal').classList.remove('open')">✕</button>
+    <div class="donate-modal-title">Apoya al Dragón Primordial</div>
+    <div class="donate-modal-sub">Tu ofrenda mantiene vivo el mundo salvaje</div>
+
+    <!-- CONTADOR DE DONACIONES -->
+    <div class="donate-counter-wrap">
+      <div class="donate-counter-label">✦ Guerreros que han ofrendado ✦</div>
+      <div class="donate-counter-val" id="donateCounterVal">💙</div>
+      <div class="donate-counter-sub">Cada llama representa un mecenas</div>
+    </div>
+
     <div class="donate-options">
+      <!-- 💙 PAYPAL — ACTIVO CON ULTRA EFFECT -->
       <div class="donate-option">
         <div class="donate-option-icon">💙</div>
         <div class="donate-option-name">PayPal</div>
-        <div class="donate-option-desc">Busca en PayPal</div>
+        <div class="donate-option-desc">Busca en PayPal o usa el enlace directo</div>
         <div class="donate-option-val">@DragonPrimordial</div>
-        <a class="donate-action" href="https://paypal.me/DragonPrimordial" target="_blank">Abrir PayPal</a>
-      </div>
-      <div class="donate-option">
-        <div class="donate-option-icon">🟢</div>
-        <div class="donate-option-name">DeUna / Banco Pichincha</div>
-        <div class="donate-option-desc">Cuenta de ahorro transaccional</div>
-        <div class="donate-option-val">2215350861</div>
-        <div class="donate-option-name2">Francisco Reinaldo</div>
+        <a class="paypal-ultra"
+           href="https://paypal.me/DragonPrimordial"
+           target="_blank"
+           onclick="paypalEffect(this, event)">
+          💙 Abrir PayPal
+        </a>
       </div>
     </div>
-    <div class="donate-thanks">Cada aporte es una llama mas en la Era Salvaje</div>
+
+    <!-- ========================= -->
+    <!-- 🟢 BANCO PICHINCHA — GUARDADO EN SOMBRAS -->
+    <!-- ========================= -->
+    <!--
+    <div class="donate-option">
+      <div class="donate-option-icon">🟢</div>
+      <div class="donate-option-name">DeUna / Banco Pichincha</div>
+      <div class="donate-option-desc">Cuenta de ahorro transaccional</div>
+      <div class="donate-option-val">2215350861</div>
+      <div class="donate-option-name2">Francisco Reinaldo</div>
+    </div>
+    -->
+
+    <div class="donate-thanks">🐲 Cada aporte es una llama más en la Era Salvaje</div>
   </div>
 </div>
 
 <!-- PROFILE MODAL -->
 <div class="profile-overlay" id="profileModal" onclick="if(event.target===this&&profileExists())this.classList.remove('open')">
   <div class="profile-modal">
-    <button class="profile-modal-close" id="profileCloseBtn" onclick="if(profileExists())document.getElementById('profileModal').classList.remove('open')" style="display:none">X</button>
+    <button class="profile-modal-close" id="profileCloseBtn" onclick="if(profileExists())document.getElementById('profileModal').classList.remove('open')" style="display:none">✕</button>
     <div class="profile-modal-icon">🐲</div>
-    <div class="profile-modal-title">El Oraculo te reconoce</div>
+    <div class="profile-modal-title">El Oráculo te reconoce</div>
     <div class="profile-modal-sub">Dime tu nombre, cazador, y cual es la bestia que habita en tu alma.</div>
     <div class="profile-field">
       <label class="profile-label" for="profileName">Tu nombre en la Era Salvaje</label>
@@ -538,16 +909,42 @@ drawEmbers();
   </div>
 </div>
 
-
-<!-- POLLINATIONS BADGE -->
+<!-- POLLINATIONS BADGE + FOOTER -->
 <div style="position:fixed;bottom:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.4rem;padding:0.4rem 1.2rem;background:rgba(5,3,5,0.96);border-top:1px solid rgba(255,140,0,0.08);">
   <a href="https://pollinations.ai" target="_blank" style="display:flex;align-items:center;gap:0.5rem;text-decoration:none;font-family:'Cinzel',serif;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,140,0,0.45);border:1px solid rgba(255,140,0,0.12);padding:0.25rem 0.7rem;clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);transition:all 0.2s;">🌸 Powered by Pollinations AI</a>
   <div style="display:flex;gap:0.4rem;align-items:center;">
     <span style="font-family:'Cinzel',serif;font-size:0.52rem;letter-spacing:0.1em;color:rgba(255,140,0,0.28);">🔥 Apoya:</span>
-    <a href="https://paypal.me/DragonPrimordial" target="_blank" style="font-family:'Cinzel',serif;font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.25rem 0.65rem;background:rgba(0,100,255,0.08);border:1px solid rgba(0,100,255,0.2);color:rgba(100,160,255,0.6);text-decoration:none;clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);">💙 PayPal</a>
-    <span style="font-family:'Cinzel',serif;font-size:0.52rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.25rem 0.65rem;background:rgba(0,200,100,0.05);border:1px solid rgba(0,200,100,0.15);color:rgba(0,220,120,0.5);clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);">🟢 DeUna: 2215350861</span>
+    <a href="https://paypal.me/DragonPrimordial" target="_blank"
+       onclick="paypalEffect(this,event)"
+       style="font-family:'Cinzel',serif;font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.25rem 0.65rem;background:rgba(0,100,255,0.08);border:1px solid rgba(0,100,255,0.2);color:rgba(100,160,255,0.6);text-decoration:none;clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);transition:all 0.2s;">💙 PayPal</a>
+    <!-- 🟢 DeUna: 2215350861 — guardado en sombras -->
   </div>
 </div>
 <div style="height:38px;"></div>
 </body>
 </html>
+
+<!-- 🔥 CÓDIGO COMPLETO LISTO — aquí está todo lo que entra al tocar PayPal:
+
+💙 PayPal Ultra Effect:
+
+Botón late con pulso escalado (paypalPulse)
+Flash azul radial explota en pantalla
+3 anillos concéntricos se expanden desde el centro
+Texto flotante épico aleatorio ("El Dragón recuerda tu ofrenda...", etc.)
+Fire burst de llamas desde abajo
+Toast dorado con mensaje aleatorio
+
+💰 Lluvia de Monedas (triggerCoinRain):
+
+70 objetos cayendo — monedas con gradiente y brillo realista, chispas y emojis (💙💰⚡🌟🔥💎)
+Efecto de "wobble" lateral que simula las monedas girando en el aire
+Fade out suave al final
+
+🏆 Contador de Donaciones:
+
+Se guarda en localStorage — persiste entre visitas
+Muestra corazones 💙 acumulándose con cada clic
+Se actualiza en tiempo real dentro del modal
+
+🗿 Banco Pichincha comentado perfectamente con <!-- 🟢 BANCO PICHINCHA — GUARDADO EN SOMBRAS -- tanto en el modal como en el footer. -->
